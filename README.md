@@ -1,13 +1,13 @@
 # fugit
 
-`fugit` is a time tracking tool that is accessed from the command-line. It's
-inspired by [https://www.ledger-cli.org/](`ledger-cli`), except it's for time
+`fugit` is a time tracking tool that is accessed from the command line. It's
+inspired by [`ledger-cli`](https://www.ledger-cli.org/), except it's for time
 tracking and not accounting.
 
-This is also my first Go project. ¯\_(ツ)_/¯
+This is also my first Go project. ¯\\_(ツ)\_/¯
 
 
-`fugit` works with a simple text file where all activities/tasks are kepts as follows:
+`fugit` works with a simple text file where all activities/tasks are kept as follows:
 
 ```
 2021-10-12
@@ -18,13 +18,13 @@ This is also my first Go project. ¯\_(ツ)_/¯
 2021-10-13
     08:05-08:28 Breakfast
     08:28-10:04 Read a book
-    10:10-12:08 
+    10:10-12:08 Go shopping
 ```
 
-`fugit` just read the file (located at `$FUGIT_FILE`) and do some computations such as:
+`fugit` just reads the file (located at `$FUGIT_FILE`) and do some computations such as:
 
-```bash
-% fugit -d  # today
+```console
+$ fugit -d  # today
 OK: /path/to/fugit.txt
 
 Read 6 tasks
@@ -42,7 +42,7 @@ To   2021-10-12 21:40:00 +0000 UTC
 
 Time spent: 8h18m0s
 
-% fugit -m  # this month
+$ fugit -m  # this month
 OK: /path/to/fugit.txt
 
 Read 35 tasks
