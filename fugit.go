@@ -214,6 +214,8 @@ func main() {
 	}
 
 	fmt.Printf("OK: %s\n\nRead %d tasks\n", filename, count)
-	fmt.Printf("From %s\nTo   %s\n\n", firstDate, lastDate)
-	fmt.Printf("Time spent: %s\n", totalSpent)
+	if count > 0 {
+		fmt.Printf("From %s\nTo   %s\n\n", firstDate, lastDate)
+		fmt.Printf("Time spent: %s\n", totalSpent)
+	}
 }
