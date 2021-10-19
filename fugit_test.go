@@ -185,15 +185,16 @@ func TestStreamSelectRange(t *testing.T) {
 
 }
 
-func TestParseCommandLine(t *testing.T) {
+func TestParseCommandLineDay(t *testing.T) {
 	args := []string{"progname", "-t", "#ok", "-d"}
 
-	start := time.Now().UTC().Truncate(24 * time.Hour)
-	dur, _ := time.ParseDuration("23h59m59s")
-	end := time.Now().Truncate(24 * time.Hour).UTC().Add(dur)
+	thisNow, _ := time.Parse(time.RFC3339, "2021-10-19T18:07:23Z")
+	start, _ := time.Parse(time.RFC3339, "2021-10-19T00:00:00Z")
+	end, _ := time.Parse(time.RFC3339, "2021-10-19T23:59:59Z")
 
 	want := Config{start, end, "#ok"}
-	got := *parseCommandLine(args[0], args[1:])
+	got := *parseCommandLineWithTime(thisNow, args[0], args[1:])
+
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
@@ -202,12 +203,12 @@ func TestParseCommandLine(t *testing.T) {
 func TestParseCommandLineMonth(t *testing.T) {
 	args := []string{"progname", "-t", "#ok", "-m"}
 
-	now := time.Now().UTC()
-	start := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
-	end := start.AddDate(0, 1, 0).Add(-time.Second)
+	thisNow, _ := time.Parse(time.RFC3339, "2021-10-19T13:37:00Z")
+	start, _ := time.Parse(time.RFC3339, "2021-10-01T00:00:00Z")
+	end, _ := time.Parse(time.RFC3339, "2021-10-31T23:59:59Z")
 
 	want := Config{start, end, "#ok"}
-	got := *parseCommandLine(args[0], args[1:])
+	got := *parseCommandLineWithTime(thisNow, args[0], args[1:])
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}
@@ -216,16 +217,12 @@ func TestParseCommandLineMonth(t *testing.T) {
 func TestParseCommandLineWeek(t *testing.T) {
 	args := []string{"progname", "-t", "#ok", "-w"}
 
-	now := time.Now().UTC()
-
-	start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-	start = start.AddDate(0, 0, -int(now.Weekday()))
-
-	end := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-	end = end.AddDate(0, 0, 7-int(now.Weekday())).Add(-time.Second)
+	thisNow, _ := time.Parse(time.RFC3339, "2021-09-02T13:37:00Z") // Tue
+	start, _ := time.Parse(time.RFC3339, "2021-08-29T00:00:00Z")   // Sun
+	end, _ := time.Parse(time.RFC3339, "2021-09-04T23:59:59Z")     // Sat
 
 	want := Config{start, end, "#ok"}
-	got := *parseCommandLine(args[0], args[1:])
+	got := *parseCommandLineWithTime(thisNow, args[0], args[1:])
 	if got != want {
 		t.Errorf("got %q, want %q", got, want)
 	}

@@ -142,6 +142,10 @@ func parseTaskLine(day string, interval string, desc string) *Task {
 }
 
 func parseCommandLine(progname string, args []string) *Config {
+	return parseCommandLineWithTime(time.Now().UTC(), progname, args)
+}
+
+func parseCommandLineWithTime(refTime time.Time, progname string, args []string) *Config {
 	flagSet := flag.NewFlagSet(progname, flag.ContinueOnError)
 
 	tFlag := flagSet.String("t", "", "Filter on tag")
@@ -151,39 +155,37 @@ func parseCommandLine(progname string, args []string) *Config {
 	aFlag := flagSet.Bool("a", false, "All time (until now)")
 	flagSet.Parse(args)
 
-	now := time.Now().UTC()
-
 	// All time (until now)
 	if *aFlag {
 		start := time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)
-		end := now
+		end := refTime
 		return &Config{start, end, *tFlag}
 	}
 
 	// From the begining of this day to the end of this day
 	if *dFlag {
-		start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+		start := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
 		end := start.AddDate(0, 0, 1).Add(-time.Second)
 		return &Config{start, end, *tFlag}
 	}
 
 	// From the begining of this month to the end of this month
 	if *mFlag {
-		start := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+		start := time.Date(refTime.Year(), refTime.Month(), 1, 0, 0, 0, 0, time.UTC)
 		end := start.AddDate(0, 1, 0).Add(-time.Second)
 		return &Config{start, end, *tFlag}
 	}
 
 	// This week
 	if *wFlag {
-		start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-		start = start.AddDate(0, 0, -int(now.Weekday()))
-		end := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-		end = end.AddDate(0, 0, 7-int(now.Weekday())).Add(-time.Second)
+		start := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
+		start = start.AddDate(0, 0, -int(refTime.Weekday()))
+		end := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
+		end = end.AddDate(0, 0, 7-int(refTime.Weekday())).Add(-time.Second)
 		return &Config{start, end, *tFlag}
 	}
 
-	return &Config{now, now, *tFlag}
+	return &Config{refTime, refTime, *tFlag}
 }
 
 func main() {
