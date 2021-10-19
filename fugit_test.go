@@ -227,3 +227,17 @@ func TestParseCommandLineWeek(t *testing.T) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
+
+func TestParseCommandLineWeekStartMonday(t *testing.T) {
+	args := []string{"progname", "-t", "#ok", "-W"}
+
+	thisNow, _ := time.Parse(time.RFC3339, "2021-09-02T13:37:00Z") // Tue
+	start, _ := time.Parse(time.RFC3339, "2021-08-30T00:00:00Z")   // Mon
+	end, _ := time.Parse(time.RFC3339, "2021-09-05T23:59:59Z")     // Sun
+
+	want := Config{start, end, "#ok"}
+	got := *parseCommandLineWithTime(thisNow, args[0], args[1:])
+	if got != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}

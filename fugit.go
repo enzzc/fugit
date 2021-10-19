@@ -152,6 +152,7 @@ func parseCommandLineWithTime(refTime time.Time, progname string, args []string)
 	dFlag := flagSet.Bool("d", false, "This day")
 	mFlag := flagSet.Bool("m", false, "This month")
 	wFlag := flagSet.Bool("w", false, "This week (starts on Sun)")
+	wwFlag := flagSet.Bool("W", false, "This week (starts on Mon)")
 	aFlag := flagSet.Bool("a", false, "All time (until now)")
 	flagSet.Parse(args)
 
@@ -176,12 +177,21 @@ func parseCommandLineWithTime(refTime time.Time, progname string, args []string)
 		return &Config{start, end, *tFlag}
 	}
 
-	// This week
+	// This week (starts on Sun)
 	if *wFlag {
 		start := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
 		start = start.AddDate(0, 0, -int(refTime.Weekday()))
 		end := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
 		end = end.AddDate(0, 0, 7-int(refTime.Weekday())).Add(-time.Second)
+		return &Config{start, end, *tFlag}
+	}
+
+	// This week (starts on Mon)
+	if *wwFlag {
+		start := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
+		start = start.AddDate(0, 0, -int(refTime.Weekday()-1))
+		end := time.Date(refTime.Year(), refTime.Month(), refTime.Day(), 0, 0, 0, 0, time.UTC)
+		end = end.AddDate(0, 0, 8-int(refTime.Weekday())).Add(-time.Second)
 		return &Config{start, end, *tFlag}
 	}
 
