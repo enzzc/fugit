@@ -159,7 +159,7 @@ func parseCommandLineWithTime(refTime time.Time, progname string, args []string)
 	// All time (until now)
 	if *aFlag {
 		start := time.Date(0, 0, 0, 0, 0, 0, 0, time.UTC)
-		end := refTime
+		end := time.Date(9999, 1, 1, 0, 0, 0, 0, time.UTC)
 		return &Config{start, end, *tFlag}
 	}
 
